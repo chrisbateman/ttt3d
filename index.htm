@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+	<title>Tic Tac Toe 3D</title>
+    <meta name="viewport" content="width=device-width, initial-scale=0.9" />
+    <!-- todo: adjust viewport scale dynamically -->
+	<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+	<div class="instructions">To rotate, hold shift and drag.</div>
+	
+	<div class="red-score active">Red <span id="RedScore">0</span></div>
+	<div class="blue-score">Blue <span id="BlueScore">0</span></div>
+	
+	<div class="world">
+		<div id="Cam" class="camera"></div>
+	</div>
+	
+	
+    <script src="http://cbateman.com/demos/accelerometer/Motionizer.js"></script>
+	<script src="tictactoe3d.js"></script>
+	<script>
+	tictactoe3d.init('Cam');
+	</script>
+</body>
+</html>
