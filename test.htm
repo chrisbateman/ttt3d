@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+<head>
+	<title>Tic Tac Toe Test</title>
+	<link rel="stylesheet" href="styles.css" />
+	<link rel="stylesheet" href="http://yui.yahooapis.com/combo?3.8.1/widget-base/assets/skins/sam/widget-base.css&3.8.1/console/assets/skins/sam/console.css&3.8.1/console-filters/assets/skins/sam/console-filters.css&3.8.1/test-console/assets/skins/sam/test-console.css" />
+	<style>
+	.yui3-console {
+		position: absolute;
+		bottom: 4px;
+		width: 100% !important;
+		z-index: 1;
+		background: #FFF;
+		pointer-events: auto;
+	}
+	</style>
+</head>
+<body class="yui3-skin-sam">
+	<div class="instructions">To rotate, hold shift and drag.</div>
+	
+	<div class="red-score active">Red <span id="RedScore">0</span></div>
+	<div class="blue-score">Blue <span id="BlueScore">0</span></div>
+	
+	
+	<div class="world">
+		<div id="Cam" class="camera"></div>
+	</div>
+	
+<script src="tictactoe3d.js"></script>
+<script src="http://yui.yahooapis.com/3.8.1/build/yui/yui-min.js"></script>
+<script>
+
+YUI().use('test-console', 'test', 'node-event-simulate', function (Y) {
+	
+	var testCase = new Y.Test.Case({
+		
+		name: 'Tic Tac Toe Test',
+		
+		_should: {
+			error: {
+				'Initialize Code': false
+			}
+		},
+		
+		setUp: function() {
+			this.yTestCube = Y.one('.cube');
+			this.yRedScore = Y.one('.red-score');
+			this.yBlueScore = Y.one('.blue-score');
+		},
+		
+		
+		'Initialize Game': function() {
+			tictactoe3d.init('Cam');
+		},
+		
+		'HTML Setup': function() {
+			var yCubes = Y.all('.cube');
+			var yStacks = Y.all('.stack');
+			var yRows = Y.all('.row');
+			
+			Y.Assert.areEqual(yStacks.size(), 3, 'Wrong number of stacks');
+			Y.Assert.areEqual(yRows.size(), 9, 'Wrong number of rows');
+			Y.Assert.areEqual(yCubes.size(), 27, 'Wrong number of cubes');
+			Y.Assert.areEqual(yCubes.item(0).get('children').size(), 6, 'Wrong number sides on cube');
+		},
+		
+		'Cube Styling': function() {
+			this.yTestCube.addClass('red');
+			Y.Assert.areEqual(window.getComputedStyle(this.yTestCube.getDOMNode().children[0]).backgroundColor, 'rgb(255, 40, 40)', 'Cube not colored');
+			this.yTestCube.removeClass('red');
+		},
+		
+		'Turn Actions': function () {
+			this.yTestCube.simulate('click');
+			Y.assert(this.yTestCube.hasClass('red'), '1st Move: click unsuccessful');
+			Y.assert(!this.yRedScore.hasClass('active') && this.yBlueScore.hasClass('active'), '1st Move: turn indicator incorrect');
+			
+			this.yTestCube.simulate('click');
+			Y.assert(this.yTestCube.hasClass('red') && !this.yTestCube.hasClass('blue'), 'Invalid 2nd Move: selected cube cannot change');
+			Y.assert(!this.yRedScore.hasClass('active') && this.yBlueScore.hasClass('active'), 'Invalid 2nd Move: turn should not have changed');
+			
+			this.yTestCube.next().simulate('click');
+			Y.assert(this.yTestCube.hasClass('red'), '2nd Move: click unsuccessful');
+			Y.assert(this.yRedScore.hasClass('active') && !this.yBlueScore.hasClass('active'), '2nd Move: turn indicator incorrect');
+			
+			this.yTestCube.removeClass('red');
+			this.yTestCube.next().removeClass('blue');
+		},
+		
+		'Test Game': function() {
+			var yCubes = Y.all('.cube')
+			
+			yCubes.item(0).simulate('click');
+			yCubes.item(9).simulate('click');
+			
+			yCubes.item(4).simulate('click');
+			yCubes.item(10).simulate('click');
+			
+			yCubes.item(8).simulate('click');
+			yCubes.item(11).simulate('click');
+			
+			yCubes.item(16).simulate('click');
+			yCubes.item(14).simulate('click');
+			
+			yCubes.item(24).simulate('click');
+			yCubes.item(17).simulate('click');
+			
+			yCubes.item(12).simulate('click');
+			yCubes.item(5).simulate('click');
+			
+			yCubes.item(18).simulate('click');
+			yCubes.item(23).simulate('click');
+			
+			Y.assert(this.yRedScore.one('span').getContent() == 3 && this.yBlueScore.one('span').getContent() == 3, 'Score incorrect');
+		}
+		
+		
+	});
+	
+	
+	
+	//initialize the console
+	(new Y.Test.Console({
+		filters: {
+			pass: true
+		},
+		newestOnTop: false,
+        height: '250px'
+	})).render('#log');
+	
+	Y.Test.Runner.add(testCase);
+	Y.Test.Runner.run();
+	
+});
+
+</script>
+</body>
+</html>
